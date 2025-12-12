@@ -17,14 +17,20 @@ It demonstrates CRUD operations via REST APIs, external API integration, and sim
 
 3. **Reporting / Data Visualization**
    - Counts tasks by status (`todo`, `in-progress`, `done`).
-   - API endpoint: `/api/status_counts/`
+   - API endpoint: `/api/reports/status-counts/`
 
 ---
 
 ## **Live Demo**
 
 Check the live deployed project here:  
-[https://django-demo-task.onrender.com](https://django-demo-task.onrender.com)
+[https://django-demo-task-5.onrender.com](https://django-demo-task-5.onrender.com)
+
+You can directly access API endpoints:
+
+- Tasks: [https://django-demo-task-5.onrender.com/api/tasks/](https://django-demo-task-5.onrender.com/api/tasks/)  
+- Reports / Status Counts: [https://django-demo-task-5.onrender.com/api/reports/status-counts/](https://django-demo-task-5.onrender.com/api/reports/status-counts/)  
+- External Posts: [https://django-demo-task-5.onrender.com/api/external_posts/](https://django-demo-task-5.onrender.com/api/external_posts/)
 
 ---
 
