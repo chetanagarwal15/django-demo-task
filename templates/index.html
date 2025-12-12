@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Task Dashboard</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 24px; }
+    h1 { margin-bottom: 12px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    .card { padding: 16px; border-radius: 8px; box-shadow: 0 1px 6px rgba(0,0,0,0.08); background:#fff; }
+    canvas { width:100% !important; height:400px !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tasks Status Report</h1>
+    <div class="card">
+      <canvas id="statusChart"></canvas>
+    </div>
+
+    <h2>Raw report JSON</h2>
+    <pre id="raw" style="background:#f6f8fa;padding:12px;border-radius:6px;"></pre>
+  </div>
+
+  <script>
+    async function loadReport() {
+      try {
+        const res = await fetch('/api/reports/status-counts/');
+        if (!res.ok) throw new Error('Failed to fetch report: ' + res.status);
+        const data = await res.json();
+
+        // show raw json
+        document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
+
+        // Prepare chart data: keys and values
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+
+        // If all zeros (no data), display sample labels
+        const hasData = values.some(v => v > 0);
+        const finalLabels = hasData ? labels : ['todo','in-progress','done'];
+        const finalValues = hasData ? values : [0,0,0];
+
+        const ctx = document.getElementById('statusChart').getContext('2d');
+
+        // Destroy existing chart if reloading (in case of hot reload)
+        if (window._statusChart) {
+          window._statusChart.destroy();
+        }
+
+        window._statusChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: finalLabels,
+            datasets: [{
+              label: 'Tasks count by status',
+              data: finalValues,
+              // default colors — Chart.js will pick automatically
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: { beginAtZero: true, precision: 0 }
+            }
+          }
+        });
+      } catch (err) {
+        document.getElementById('raw').textContent = 'Error: ' + err.message;
+      }
+    }
+
+    // load on page open
+    loadReport();
+  </script>
+</body>
+</html>
